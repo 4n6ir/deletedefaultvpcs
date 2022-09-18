@@ -22,6 +22,13 @@ class DeletedefaultvpcsStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        region = Stack.of(self).region
+
+        layer = _lambda.LayerVersion.from_layer_version_arn(
+            self, 'layer',
+            layer_version_arn = 'arn:aws:lambda:'+region+':070176467818:layer:getpublicip:1'
+        )
+
         try:
             client = boto3.client('account')
             operations = client.get_alternate_contact(
@@ -108,8 +115,11 @@ class DeletedefaultvpcsStack(Stack):
             runtime = _lambda.Runtime.PYTHON_3_9,
             architecture = _lambda.Architecture.ARM_64,
             timeout = Duration.seconds(60),
-            memory_size = 128,
-            role = role
+            memory_size = 256,
+            role = role,
+            layers = [
+                layer
+            ]
         )
 
         logs = _logs.LogGroup(
