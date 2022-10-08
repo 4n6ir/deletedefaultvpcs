@@ -6,6 +6,8 @@ from aws_cdk import (
     Duration,
     RemovalPolicy,
     Stack,
+    aws_events as _events,
+    aws_events_targets as _targets,
     aws_iam as _iam,
     aws_lambda as _lambda,
     aws_logs as _logs,
@@ -142,6 +144,19 @@ class DeletedefaultvpcsStack(Stack):
             destination = _destinations.LambdaDestination(error),
             filter_pattern = _logs.FilterPattern.all_terms('Task','timed','out')
         )
+
+        deleteevent = _events.Rule(
+            self, 'deleteevent',
+            schedule = _events.Schedule.cron(
+                minute = '0',
+                hour = '0',
+                month = '*',
+                week_day = '*',
+                year = '*'
+            )
+        )
+
+        deleteevent.add_target(_targets.LambdaFunction(delete))
 
         provider = _custom.Provider(
             self, 'provider',
