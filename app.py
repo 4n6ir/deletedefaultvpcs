@@ -18,6 +18,7 @@ DeletedefaultvpcsStack(
     )
 )
 
-cdk.Tags.of(app).add('deletedefaultvpcs','deletedefaultvpcs')
+cdk.Tags.of(app).add('Alias','ALL')
+cdk.Tags.of(app).add('GitHub','https://github.com/4n6ir/deletedefaultvpcs')
 
 app.synth()
