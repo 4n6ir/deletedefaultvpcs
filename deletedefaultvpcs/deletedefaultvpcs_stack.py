@@ -42,7 +42,7 @@ class DeletedefaultvpcsStack(Stack):
 
         layer = _lambda.LayerVersion.from_layer_version_arn(
             self, 'layer',
-            layer_version_arn = 'arn:aws:lambda:'+region+':070176467818:layer:getpublicip:3'
+            layer_version_arn = 'arn:aws:lambda:'+region+':070176467818:layer:getpublicip:4'
         )
 
         role = _iam.Role(
@@ -78,7 +78,7 @@ class DeletedefaultvpcsStack(Stack):
             self, 'delete',
             code = _lambda.Code.from_asset('delete'),
             handler = 'delete.handler',
-            runtime = _lambda.Runtime.PYTHON_3_9,
+            runtime = _lambda.Runtime.PYTHON_3_10,
             architecture = _lambda.Architecture.ARM_64,
             timeout = Duration.seconds(60),
             memory_size = 256,
@@ -130,7 +130,11 @@ class DeletedefaultvpcsStack(Stack):
             )
         )
 
-        deleteevent.add_target(_targets.LambdaFunction(delete))
+        deleteevent.add_target(
+            _targets.LambdaFunction(
+                delete
+            )
+        )
 
         provider = _custom.Provider(
             self, 'provider',
